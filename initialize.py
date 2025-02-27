@@ -32,36 +32,34 @@ run = True
 while run:
     clock.tick(fps)
 
-
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                player.direction = -1
-            elif event.key == pygame.K_RIGHT:
-                player.direction = 1
+
+    # Update player based on key inputs 
+    keys = pygame.key.get_pressed()
+
+    if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
+        player.direction = -1
+    elif keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
+        player.direction = 1
+    else:
+        player.direction = 0
+    if keys[pygame.K_UP]:
+        if not player.jumped:
+            player.y_vel = -15  # Jump strength 
+            player.jumped = True
+    else:
+        # Reset jump flag when jump key is released.
+        player.jumped = False
+
 
     # Draw bg
     screen.blit(bg_img, (0,0))
 
     # Draw world
     world.draw(screen)
-
-    # Update player direction based on key inputs
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        player.direction = -1
-    elif keys[pygame.K_RIGHT]:
-        player.direction = 1
-    else:
-        player.counter = 0
-        player.index = 0
-        player.direction = 0
-        if player.direction == 1:
-            player.image = player.images_right[player.index]
-        if player.direction == -1:
-            player.image = player.images_left[player.index]
 
     # Draw player
     player.update()

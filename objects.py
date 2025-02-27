@@ -37,6 +37,11 @@ class Player:
         # Walk spped
         self.speed = 5
 
+        # Vertical velocity (Gravity)
+        self.y_vel = 0
+
+        # Flag for jump
+        self.jumped = False
 
 
     def update(self):
@@ -47,6 +52,7 @@ class Player:
         dx = 0
         dy = 0
 
+        # Horizontal Movement
         # If player is moving (direction != 0), update animation and delta coordinates
         if self.direction != 0:
             dx = int(self.speed * self.direction)
@@ -70,13 +76,21 @@ class Player:
             elif self.facing == -1:
                     self.image = self.images_left[self.index]
 
+        
+        # Vertical movement and Gravity
+        gravity = 1
+        self.y_vel += gravity
+        if self.y_vel > 10:  # Limit max fall speed
+            self.y_vel = 10
+        dy += self.y_vel
+
         # Update player position
         self.rect.x += dx
         self.rect.y += dy
 
             
     def draw(self, screen):
-        # Draw the player at the current location with rect(coordinates)
+        # Draw player at current location with rect(coordinates)
         screen.blit(self.image, self.rect)
 
 

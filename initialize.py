@@ -36,6 +36,11 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                player.direction = -1
+            elif event.key == pygame.K_RIGHT:
+                player.direction = 1
 
     # Draw bg
     screen.blit(bg_img, (0,0))
@@ -52,6 +57,7 @@ while run:
     else:
         player.counter = 0
         player.index = 0
+        player.direction = 0
         if player.direction == 1:
             player.image = player.images_right[player.index]
         if player.direction == -1:

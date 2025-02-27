@@ -4,6 +4,7 @@ import pygame
 
 class Player:
     def __init__(self, x, y):
+        
         # Hold left and right images in list
         self.images_right = []
         self.images_left = []
@@ -25,19 +26,33 @@ class Player:
 
         # Getting the coordinates for collision detection and drawing
         self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+        self.rect.topleft = (x,y)
 
-        # Set the direction 1 = right, -1 = left, 0 = idle
+        # Set the movement direction 1 = right, -1 = left, 0 = idle
         self.direction = 0
+
+        # last facing direction (1 = right, -1 = left)
+        self.facing = 1
+
+        # Walk spped
+        self.speed = 5
+
+
 
     def update(self):
         # Set the walk animation speed
-        walk_speed = 5
-        # If player is moving (direction != 0), update animation
+        animation_speed = 5
+
+        # Delta x and y coordinates
+        dx = 0
+        dy = 0
+
+        # If player is moving (direction != 0), update animation and delta coordinates
         if self.direction != 0:
+            dx = int(self.speed * self.direction)
             self.counter += 1
-            # Change frame every walk_speed ticks (adjust this value to speed up or slow down the animation)
-            if self.counter > walk_speed:
+            # Change frame every animation_speed ticks (adjust this value to speed up or slow down the animation)
+            if self.counter > animation_speed:
                 self.counter = 0
                 self.index += 1
                 if self.index >= len(self.images_right):
@@ -46,10 +61,18 @@ class Player:
                     self.image = self.images_right[self.index]
                 elif self.direction == -1:
                     self.image = self.images_left[self.index]
+            self.facing = self.direction
         else:
             # If idle (direction = 0), reset the animation to the first image
             self.index = 0
+            if self.facing == 1:
+                    self.image = self.images_right[self.index]
+            elif self.facing == -1:
+                    self.image = self.images_left[self.index]
 
+        # Update player position
+        self.rect.x += dx
+        self.rect.y += dy
 
             
     def draw(self, screen):

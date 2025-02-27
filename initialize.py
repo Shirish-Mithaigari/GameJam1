@@ -4,6 +4,7 @@ import pickle
 from os import path
 from configs import screen_width, screen_height, fps
 from world import World
+from objects import Player
 
 pygame.init()
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -24,6 +25,9 @@ else:
 
 world = World(level_data)
 
+# Create player at (50, screen_height - 120) - (player character height(80) + Tile height(40) = 120))
+player = Player(50, screen_height - 120)
+
 run = True
 while run:
     clock.tick(fps)
@@ -38,6 +42,10 @@ while run:
 
     # Draw world
     world.draw(screen)
+
+    # Draw player
+    player.draw(screen)
+
     pygame.display.update()
 
 pygame.quit()

@@ -1,10 +1,15 @@
 # World generation
 import pygame
 from configs import tile_size
+from objects import Enemy
 
 class World:
     def __init__(self, data):
         self.tile_list = []
+
+        # Sprite group for enemy
+        self.enemy_group = pygame.sprite.Group()
+
         # Load images for static background tiles
         dirt_img = pygame.image.load('img/dirt.png')
         grass_img = pygame.image.load('img/grass.png')
@@ -25,6 +30,10 @@ class World:
                     img_rect = img.get_rect()
                     img_rect.topleft = (col_count * tile_size, row_count * tile_size)
                     self.tile_list.append((img, img_rect))
+                elif tile == 3:
+                    # Create an enemy
+                    enemy = Enemy(col_count * tile_size, row_count * tile_size) # Adjusting y offset if needed
+                    self.enemy_group.add(enemy)
                 col_count += 1
             row_count += 1
 

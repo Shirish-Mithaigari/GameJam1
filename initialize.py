@@ -15,17 +15,17 @@ clock = pygame.time.Clock()
 bg_img = pygame.image.load('img/sky.png')
 bg_img = pygame.transform.scale(bg_img, (screen_width, screen_height))
 
-# Load level data from the file 'level1_data'
+# Load level data from the file 'level5_data'
 level_data = []
-if path.exists("level1_data"):
-    with open("level1_data", "rb") as f:
+if path.exists("level5_data"):
+    with open("level5_data", "rb") as f:
         level_data = pickle.load(f)
 else:
-    print("level1_data file not found.")
+    print("level5_data file not found.")
 
 world = World(level_data)
 
-# Create player at (50, screen_height - 120) - (player character height(80) + Tile height(40) = 120))
+# Create player at (50, screen_height - 120) :- {player character height(80) + Tile height(40) = 120)}
 player = Player(50, screen_height - 120)
 
 run = True
@@ -61,9 +61,13 @@ while run:
     # Draw world
     world.draw(screen)
 
-    # Draw player
+    # Update and draw player
     player.update(world)
     player.draw(screen)
+
+    # Update and draw enemy
+    world.enemy_group.update(world)
+    world.enemy_group.draw(screen)
 
     pygame.display.update()
 

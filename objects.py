@@ -111,3 +111,63 @@ class Player:
 
 
 
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        
+        # Load image
+        self.image = pygame.image.load('img/blob.png')
+        # Scale image
+        self.image = pygame.transform.scale(self.image, (40, 40))
+
+        # Get coordinates
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
+
+        # Movement parameters:
+        self.move_direction = 1   # 1 = right, -1 = left
+        self.speed = 2            # Enemy move speed
+
+    def update(self, world):
+        # Calculate delta x
+        dx = self.move_direction * self.speed
+
+        can_move = True
+        
+        # Collision detection for each tile in world
+        for tile in world.tile_list:
+            tile_rect = tile[1]
+            # check horizontal collision
+            if tile_rect.colliderect(self.rect.x + dx, self.rect.y, self.rect.width, self.rect.height):
+                can_move = False
+                break
+
+        # Ground detection
+        # Checking if there is platform under the enemy's moving direction
+        if self.move_direction == 1:
+            # Check at bottom right corner after moving dx
+            check_point = (self.rect.right + dx, self.rect.bottom + 1)
+        else:
+            # Check at bottom left corner after moving dx
+            check_point = (self.rect.left + dx, self.rect.bottom + 1)
+        
+        ground_found = False
+        for tile in world.tile_list:
+            if tile[1].collidepoint(check_point):
+                ground_found = True
+                break
+
+        # Stop movement if no ground ahead
+        if not ground_found:
+            can_move = False
+
+        
+        if not can_move:
+            # Reverse direction if can't move ahead
+            self.move_direction *= -1
+        else:
+            # else, update position
+            self.rect.x += dx
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)

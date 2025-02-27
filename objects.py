@@ -1,9 +1,11 @@
 # Game Objects
 
 import pygame
+from configs import tile_size
 
-class Player:
+class Player(pygame.sprite.Sprite):
     def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
         
         # Hold left and right images in list
         self.images_right = []
@@ -16,7 +18,7 @@ class Player:
         # images for walking animation
         for i in range(1, 5):
             img = pygame.image.load(f'img/guy{i}.png')
-            img = pygame.transform.scale(img, (40, 80)) # Scale image, 40x80
+            img = pygame.transform.scale(img, (40, 80)) # Size modification here
             self.images_right.append(img)
             # flip images for left side movement
             self.images_left.append(pygame.transform.flip(img, True, False))
@@ -118,7 +120,7 @@ class Enemy(pygame.sprite.Sprite):
         # Load image
         self.image = pygame.image.load('img/blob.png')
         # Scale image
-        self.image = pygame.transform.scale(self.image, (40, 40))
+        self.image = pygame.transform.scale(self.image, (40, 40)) # Size modification here
 
         # Get coordinates
         self.rect = self.image.get_rect()
@@ -171,3 +173,13 @@ class Enemy(pygame.sprite.Sprite):
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
+
+
+class Spike(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+
+        self.image = pygame.image.load('img/lava.png') # Change image 
+        self.image = pygame.transform.scale(self.image, (tile_size, tile_size // 2)) # Size modification here
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)

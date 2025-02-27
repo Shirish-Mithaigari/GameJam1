@@ -1,7 +1,7 @@
 # World generation
 import pygame
 from configs import tile_size
-from objects import Enemy
+from objects import Enemy, Spike
 
 class World:
     def __init__(self, data):
@@ -9,6 +9,7 @@ class World:
 
         # Sprite group for enemy
         self.enemy_group = pygame.sprite.Group()
+        self.spike_group = pygame.sprite.Group()
 
         # Load images for static background tiles
         dirt_img = pygame.image.load('img/dirt.png')
@@ -34,6 +35,10 @@ class World:
                     # Create an enemy
                     enemy = Enemy(col_count * tile_size, row_count * tile_size) # Adjust y offset if needed (currently not required)
                     self.enemy_group.add(enemy)
+                elif tile == 6:
+                    # Create spikes
+                    spike = Spike(col_count * tile_size, row_count * tile_size + (tile_size // 2))
+                    self.spike_group.add(spike)
                 col_count += 1
             row_count += 1
 

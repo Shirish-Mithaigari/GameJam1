@@ -62,7 +62,7 @@ while run:
     world.draw(screen)
 
     # Draw player
-    player.update()
+    player.update(world)
     player.draw(screen)
 
     pygame.display.update()

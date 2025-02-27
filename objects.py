@@ -44,7 +44,7 @@ class Player:
         self.jumped = False
 
 
-    def update(self):
+    def update(self, world):
         # Set the walk animation speed
         animation_speed = 5
 
@@ -83,6 +83,22 @@ class Player:
         if self.y_vel > 10:  # Limit max fall speed
             self.y_vel = 10
         dy += self.y_vel
+
+        # Collision Detection
+        # For each tile in the world, adjust dx and dy if a collision would occur.
+        for tile in world.tile_list:
+            tile_rect = tile[1]
+            # Check horizontal collision
+            if tile_rect.colliderect(self.rect.x + dx, self.rect.y, self.rect.width, self.rect.height):
+                dx = 0
+            # Check vertical collision
+            if tile_rect.colliderect(self.rect.x, self.rect.y + dy, self.rect.width, self.rect.height):
+                if self.y_vel > 0:  # align bottom of player with top of tile when falling
+                    dy = tile_rect.top - self.rect.bottom
+                    self.y_vel = 0
+                elif self.y_vel < 0:  # align top of player with bottom of tile when jumping
+                    dy = tile_rect.bottom - self.rect.top
+                    self.y_vel = 0
 
         # Update player position
         self.rect.x += dx

@@ -43,7 +43,22 @@ while run:
     # Draw world
     world.draw(screen)
 
+    # Update player direction based on key inputs
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        player.direction = -1
+    elif keys[pygame.K_RIGHT]:
+        player.direction = 1
+    else:
+        player.counter = 0
+        player.index = 0
+        if player.direction == 1:
+            player.image = player.images_right[player.index]
+        if player.direction == -1:
+            player.image = player.images_left[player.index]
+
     # Draw player
+    player.update()
     player.draw(screen)
 
     pygame.display.update()

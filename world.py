@@ -32,7 +32,7 @@ class World:
                     self.tile_list.append((img, img_rect))
                 elif tile == 3:
                     # Create an enemy
-                    enemy = Enemy(col_count * tile_size, row_count * tile_size) # Adjusting y offset if needed
+                    enemy = Enemy(col_count * tile_size, row_count * tile_size) # Adjust y offset if needed (currently not required)
                     self.enemy_group.add(enemy)
                 col_count += 1
             row_count += 1

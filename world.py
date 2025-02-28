@@ -1,7 +1,7 @@
 # World generation
 import pygame
 from configs import tile_size
-from objects import Enemy, Spike, Exit, Coin
+from objects import Enemy, Spike, Exit, Coin, Platform
 
 class World:
     def __init__(self, data):
@@ -12,6 +12,7 @@ class World:
         self.spike_group = pygame.sprite.Group()
         self.exit_group = pygame.sprite.Group()
         self.coin_group = pygame.sprite.Group()
+        self.platform_group = pygame.sprite.Group()
 
         # Load images for static background tiles
         dirt_img = pygame.image.load('img/dirt.png')
@@ -37,6 +38,14 @@ class World:
                     # Create an enemy
                     enemy = Enemy(col_count * tile_size, row_count * tile_size) # Adjust y offset if needed (currently not required)
                     self.enemy_group.add(enemy)
+                elif tile == 4:
+                    # Create Horizontal moving platform
+                    platform = Platform(col_count * tile_size, row_count * tile_size, move_x=1, move_y=0)
+                    self.platform_group.add(platform)
+                elif tile == 5:
+                    # creat Vertical moving platform
+                    platform = Platform(col_count * tile_size, row_count * tile_size, move_x=0, move_y=1)
+                    self.platform_group.add(platform)
                 elif tile == 6:
                     # Create spikes
                     spike = Spike(col_count * tile_size, row_count * tile_size + (tile_size // 2))

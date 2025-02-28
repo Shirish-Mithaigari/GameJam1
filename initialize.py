@@ -136,6 +136,8 @@ while run:
             world.spike_group.draw(screen)
             world.exit_group.draw(screen)
             world.coin_group.draw(screen)
+            world.platform_group.update() 
+            world.platform_group.draw(screen)
 
             # Collision -> player & spikes
             if pygame.sprite.spritecollide(player, world.spike_group, False):

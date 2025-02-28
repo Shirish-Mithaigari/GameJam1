@@ -202,3 +202,30 @@ class Coin(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         # Position fruit at the center of tile
         self.rect.center = (x, y)
+
+class Platform(pygame.sprite.Sprite):
+    def __init__(self, x, y, move_x, move_y):
+        pygame.sprite.Sprite.__init__(self)
+        # Load platform image 
+        self.image = pygame.image.load('img/platform.png')
+        self.image = pygame.transform.scale(self.image, (tile_size, tile_size // 2)) # Size modification here
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
+
+        # Movement parameters
+        self.move_x = move_x  
+        self.move_y = move_y 
+        self.move_direction = 1  
+        self.move_counter = 0
+
+    def update(self):
+        # Update platform position based on movement parameters
+        # Move horizontally or vertically based on move_x and move_y
+        self.rect.x += self.move_direction * self.move_x
+        self.rect.y += self.move_direction * self.move_y
+        self.move_counter += 1
+
+        # Reverse direction after certain distance (50)
+        if abs(self.move_counter) >= 50:
+            self.move_direction *= -1
+            self.move_counter = 0

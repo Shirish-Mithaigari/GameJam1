@@ -4,7 +4,7 @@ import pygame
 from configs import tile_size
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, difficulty):
         pygame.sprite.Sprite.__init__(self)
         
         # Hold left and right images in list
@@ -48,6 +48,16 @@ class Player(pygame.sprite.Sprite):
         # Flag for in air
         self.in_air = True
 
+        # Set difficulty and jump allowance
+        self.difficulty = difficulty
+        if difficulty == "easy":
+            self.max_jumps = 2
+        else:
+            self.max_jumps = 1
+
+        # Number of jumps available (reset when player lands)
+        self.jumps_remaining = self.max_jumps
+
 
     def update(self, world):
         # Set the walk animation speed
@@ -57,7 +67,7 @@ class Player(pygame.sprite.Sprite):
         dx = 0
         dy = 0
 
-        # Horizontal Movement (static tiles)
+        # Horizontal Movement
         # If player is moving (direction != 0), update animation and delta coordinates
         if self.direction != 0:
             dx = int(self.speed * self.direction)
@@ -101,6 +111,8 @@ class Player(pygame.sprite.Sprite):
                 if self.y_vel > 0:  # align bottom of player with top of tile when falling
                     dy = tile_rect.top - self.rect.bottom
                     self.y_vel = 0
+                    self.in_air = False
+                    self.jumps_remaining = self.max_jumps # reset remaining jumps
                 elif self.y_vel < 0:  # align top of player with bottom of tile when jumping
                     dy = tile_rect.bottom - self.rect.top
                     self.y_vel = 0
@@ -123,6 +135,7 @@ class Player(pygame.sprite.Sprite):
                 elif abs((self.rect.bottom) - platform.rect.top) < col_thresh:
                     self.rect.bottom = platform.rect.top
                     self.in_air = False
+                    self.jumps_remaining = self.max_jumps # reset remaining jumps
                     dy = 0
                 # Move sideways with the platform if it has horizontal movement
                 if platform.move_x != 0:
@@ -132,7 +145,16 @@ class Player(pygame.sprite.Sprite):
         # Update player position
         self.rect.x += dx
         self.rect.y += dy
-            
+    
+    def jump(self):
+            # If jumps are remaining, perform a jump
+            if self.jumps_remaining > 0:
+                if self.difficulty == "hard":
+                    self.y_vel = -13  # Reduced jump strength in hard mode
+                else:
+                    self.y_vel = -15  # Normal jump strength in easy mode
+                self.jumps_remaining -= 1
+
     def draw(self, screen):
         # Draw player at current location with rect(coordinates)
         screen.blit(self.image, self.rect)

@@ -7,7 +7,26 @@ from world import World
 from objects import Player
 from ui import Button
 
+# For sound
+pygame.mixer.pre_init(44100, -16, 2, 512)
+pygame.mixer.init()
+
 pygame.init()
+
+# Load bgm and sound effects
+pygame.mixer.music.load('img/music.wav')  
+pygame.mixer.music.play(-1, 0.0, 5000) # Loops indefinitely
+
+jump_fx = pygame.mixer.Sound('img/jump.wav')
+jump_fx.set_volume(0.5)
+
+coin_fx = pygame.mixer.Sound('img/coin.wav')
+coin_fx.set_volume(0.5)
+
+game_over_fx = pygame.mixer.Sound('img/game_over.wav')
+game_over_fx.set_volume(0.5)
+
+
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Pixel Platformer")
 clock = pygame.time.Clock()
@@ -103,6 +122,7 @@ while run:
                 if not player.jumped:
                     player.y_vel = -15  # Jump strength 
                     player.jumped = True
+                    jump_fx.play()
             else:
                 # Reset jump flag when jump key is released.
                 player.jumped = False
@@ -120,10 +140,12 @@ while run:
             # Collision -> player & spikes
             if pygame.sprite.spritecollide(player, world.spike_group, False):
                 game_over = -1
+                game_over_fx.play()
 
             # Collision -> player & enemy
             if pygame.sprite.spritecollide(player, world.enemy_group, False):
                 game_over = -1
+                game_over_fx.play()
 
             # Collision -> player & exit
             if pygame.sprite.spritecollide(player, world.exit_group, False):
@@ -144,6 +166,7 @@ while run:
             coins_collected = pygame.sprite.spritecollide(player, world.coin_group, True) # (True removes coin on collision)
             if coins_collected:
                 score += len(coins_collected)
+                coin_fx.play()
 
             screen.blit(coin_img, (tile_size - 10, 10))
             draw_text("X" + str(score), font_score, white, tile_size + 12, 4)

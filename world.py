@@ -15,16 +15,24 @@ class World:
         self.platform_group = pygame.sprite.Group()
 
         # Load images for static background tiles
-        dirt_img = pygame.image.load('img/dirt.png')
-        grass_img = pygame.image.load('img/grass.png')
+        dirt_img = pygame.image.load('img/box.png')
+        grass_img = pygame.image.load('img/green.png')
+        border_img = pygame.image.load('img/border.png')
+        border_img = pygame.transform.scale(border_img, (tile_size, tile_size))
         
         row_count = 0
         for row in data:
             col_count = 0
             for tile in row:
+                # if tile == 1:
+                #     # Create a dirt tile
+                #     img = pygame.transform.scale(dirt_img, (tile_size, tile_size))
+                #     img_rect = img.get_rect()
+                #     img_rect.topleft = (col_count * tile_size, row_count * tile_size)
+                #     self.tile_list.append((img, img_rect))
                 if tile == 1:
-                    # Create a dirt tile
-                    img = pygame.transform.scale(dirt_img, (tile_size, tile_size))
+                    # Create boundary walls
+                    img = pygame.transform.scale(border_img, (tile_size+2, tile_size+2))
                     img_rect = img.get_rect()
                     img_rect.topleft = (col_count * tile_size, row_count * tile_size)
                     self.tile_list.append((img, img_rect))
@@ -57,8 +65,13 @@ class World:
                     self.coin_group.add(coin)
                 elif tile == 8:
                     # Create exit
-                    exit_obj = Exit(col_count * tile_size, row_count * tile_size)
+                    exit_obj = Exit(col_count * tile_size, row_count * tile_size - (tile_size//2))
                     self.exit_group.add(exit_obj)
+                if tile == 9:
+                    img = pygame.transform.scale(dirt_img, (tile_size, tile_size))
+                    img_rect = img.get_rect()
+                    img_rect.topleft = (col_count * tile_size, row_count * tile_size)
+                    self.tile_list.append((img, img_rect))
                 col_count += 1
             row_count += 1
 

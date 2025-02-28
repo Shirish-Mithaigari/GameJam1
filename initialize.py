@@ -60,16 +60,16 @@ def load_level(level_num):
 
 
 # Load backgorund image
-bg_img = pygame.image.load('img/sky.png')
+bg_img = pygame.image.load('img/background.png')
 bg_img = pygame.transform.scale(bg_img, (screen_width, screen_height))
 
 # Load coin image 
-coin_img = pygame.image.load('img/coin.png')
+coin_img = pygame.image.load('img/Cherries.png')
 coin_img = pygame.transform.scale(coin_img, (tile_size // 2, tile_size // 2))
 
 # Level management variables
 level = 1
-max_levels = 7
+max_levels = 3
 
 
 # Load initial level and world

@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.counter = 0
 
         # images for walking animation
-        for i in range(1, 5):
+        for i in range(1, 4):
             img = pygame.image.load(f'img/guy{i}.png')
             img = pygame.transform.scale(img, (40, 80)) # Size modification here
             self.images_right.append(img)
@@ -150,9 +150,9 @@ class Player(pygame.sprite.Sprite):
             # If jumps are remaining, perform a jump
             if self.jumps_remaining > 0:
                 if self.difficulty == "hard":
-                    self.y_vel = -13  # Reduced jump strength in hard mode
+                    self.y_vel = -14  # Reduced jump strength in hard mode
                 else:
-                    self.y_vel = -15  # Normal jump strength in easy mode
+                    self.y_vel = -17  # Normal jump strength in easy mode
                 self.jumps_remaining -= 1
 
     def draw(self, screen):
@@ -166,7 +166,7 @@ class Enemy(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         
         # Load image
-        self.image = pygame.image.load('img/blob.png')
+        self.image = pygame.image.load('img/Spirit.png')
         # Scale image
         self.image = pygame.transform.scale(self.image, (40, 40)) # Size modification here
 
@@ -227,7 +227,7 @@ class Spike(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = pygame.image.load('img/lava.png') # Change image 
+        self.image = pygame.image.load('img/spikes.png') # Change image 
         self.image = pygame.transform.scale(self.image, (tile_size, tile_size // 2)) # Size modification here
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
@@ -236,7 +236,7 @@ class Exit(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         # Load exit/door image 
-        self.image = pygame.image.load('img/exit.png')
+        self.image = pygame.image.load('img/Exit_door.png')
         self.image = pygame.transform.scale(self.image, (tile_size, int(tile_size * 1.5))) # Size modification here
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
@@ -245,7 +245,7 @@ class Coin(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         # Load the fruit/coin image
-        self.image = pygame.image.load('img/coin.png')
+        self.image = pygame.image.load('img/Cherries.png')
         self.image = pygame.transform.scale(self.image, (tile_size // 2, tile_size // 2)) # Size modification here
         self.rect = self.image.get_rect()
         # Position fruit at the center of tile
@@ -255,7 +255,7 @@ class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y, move_x, move_y):
         pygame.sprite.Sprite.__init__(self)
         # Load platform image 
-        self.image = pygame.image.load('img/platform.png')
+        self.image = pygame.image.load('img/moving_grid.png')
         self.image = pygame.transform.scale(self.image, (tile_size, tile_size // 2)) # Size modification here
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
@@ -276,4 +276,4 @@ class Platform(pygame.sprite.Sprite):
         # Reverse direction after certain distance (50)
         if abs(self.move_counter) >= 50:
             self.move_direction *= -1
-            self.move_counter = 0
+            self.move_counter *= -1

@@ -128,7 +128,7 @@ class Enemy(pygame.sprite.Sprite):
 
         # Movement parameters:
         self.move_direction = 1   # 1 = right, -1 = left
-        self.speed = 2            # Enemy move speed
+        self.speed = 1            # Enemy move speed
 
     def update(self, world):
         # Calculate delta x

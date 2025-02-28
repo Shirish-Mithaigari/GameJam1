@@ -183,3 +183,4 @@ class Spike(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (tile_size, tile_size // 2)) # Size modification here
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
+

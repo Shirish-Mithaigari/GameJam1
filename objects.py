@@ -184,3 +184,11 @@ class Spike(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
 
+class Exit(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        # Load exit/door image 
+        self.image = pygame.image.load('img/exit.png')
+        self.image = pygame.transform.scale(self.image, (tile_size, int(tile_size * 1.5))) # Size modification here
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)

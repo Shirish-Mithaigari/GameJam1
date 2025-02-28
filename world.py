@@ -1,15 +1,16 @@
 # World generation
 import pygame
 from configs import tile_size
-from objects import Enemy, Spike
+from objects import Enemy, Spike, Exit
 
 class World:
     def __init__(self, data):
         self.tile_list = []
 
-        # Sprite group for enemy
+        # Sprite group for enemy, exit
         self.enemy_group = pygame.sprite.Group()
         self.spike_group = pygame.sprite.Group()
+        self.exit_group = pygame.sprite.Group()
 
         # Load images for static background tiles
         dirt_img = pygame.image.load('img/dirt.png')
@@ -39,6 +40,10 @@ class World:
                     # Create spikes
                     spike = Spike(col_count * tile_size, row_count * tile_size + (tile_size // 2))
                     self.spike_group.add(spike)
+                elif tile == 8:
+                    # Create exit
+                    exit_obj = Exit(col_count * tile_size, row_count * tile_size)
+                    self.exit_group.add(exit_obj)
                 col_count += 1
             row_count += 1
 

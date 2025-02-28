@@ -16,22 +16,33 @@ clock = pygame.time.Clock()
 font = pygame.font.SysFont('Bauhaus 93', 70)
 font_score = pygame.font.SysFont('Bauhaus 93', 30)
 
+# Functions
 def draw_text(text, font, text_col, x, y):
 	img = font.render(text, True, text_col)
 	screen.blit(img, (x, y))
+
+def load_level(level_num):
+    level_data = []
+    filename = f"level{level_num}_data"
+    if path.exists(filename):
+        with open(filename, "rb") as f:
+            level_data = pickle.load(f)
+    else:
+        print(f"{filename} file not found.")
+    return level_data
+
 
 # Load backgorund image
 bg_img = pygame.image.load('img/sky.png')
 bg_img = pygame.transform.scale(bg_img, (screen_width, screen_height))
 
-# Load level data from the file 'level5_data'
-level_data = []
-if path.exists("level5_data"):
-    with open("level5_data", "rb") as f:
-        level_data = pickle.load(f)
-else:
-    print("level5_data file not found.")
+# Level management variables
+level = 1
+max_levels = 6
 
+
+# Load initial level and world
+level_data = load_level(level)
 world = World(level_data)
 
 # Create player at (50, screen_height - 120) :- {player character height(80) + Tile height(40) = 120)}
@@ -106,21 +117,37 @@ while run:
             if pygame.sprite.spritecollide(player, world.enemy_group, False):
                 game_over = -1
 
+            if pygame.sprite.spritecollide(player, world.exit_group, False):
+                # Load next level if available, else win the game.
+                level += 1
+                if level <= max_levels:
+                    # Load next level
+                    level_data = load_level(level)
+                    world = World(level_data)
+                    # Reset player position:
+                    player = Player(50, screen_height - 120)
+                else:
+                    game_over = 1
+
 
         else:
             if game_over == -1:
                 draw_text("GAME OVER!", font, blue, (screen_width // 2) - 200, screen_height // 2)
-
+                # Restart same level on death
+                if restart_button.draw(screen):
+                    level_data = load_level(level)
+                    world = World(level_data)
+                    player = Player(50, screen_height - 120)
+                    game_over = 0
             elif game_over == 1:
                 draw_text("YOU WIN!", font, blue, (screen_width // 2) - 200, screen_height // 2)
-                # Add transition to next level in next update
-
-            # Draw restart button and check if it's clicked.
-            if restart_button.draw(screen):
-                # Reset level (Player and game_over for now, add other objects)
-                player = Player(50, screen_height - 120)
-                game_over = 0
-            
+                # Restarts from level 1 if all completed
+                if restart_button.draw(screen):
+                    level = 1
+                    level_data = load_level(level)
+                    world = World(level_data)
+                    player = Player(50, screen_height - 120)
+                    game_over = 0
 
     pygame.display.update()
 

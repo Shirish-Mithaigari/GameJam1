@@ -192,3 +192,13 @@ class Exit(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (tile_size, int(tile_size * 1.5))) # Size modification here
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
+
+class Coin(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        # Load the fruit/coin image
+        self.image = pygame.image.load('img/coin.png')
+        self.image = pygame.transform.scale(self.image, (tile_size // 2, tile_size // 2)) # Size modification here
+        self.rect = self.image.get_rect()
+        # Position fruit at the center of tile
+        self.rect.center = (x, y)

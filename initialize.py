@@ -2,7 +2,7 @@
 import pygame
 import pickle
 from os import path
-from configs import screen_width, screen_height, fps, blue
+from configs import screen_width, screen_height, fps, blue, white, tile_size
 from world import World
 from objects import Player
 from ui import Button
@@ -36,6 +36,10 @@ def load_level(level_num):
 bg_img = pygame.image.load('img/sky.png')
 bg_img = pygame.transform.scale(bg_img, (screen_width, screen_height))
 
+# Load coin image 
+coin_img = pygame.image.load('img/coin.png')
+coin_img = pygame.transform.scale(coin_img, (tile_size // 2, tile_size // 2))
+
 # Level management variables
 level = 1
 max_levels = 6
@@ -58,9 +62,11 @@ start_img = pygame.image.load('img/start_btn.png')
 start_img = pygame.transform.scale(start_img, (150, 50)) # Button size
 start_button = Button((screen_width // 2) - 75, (screen_height // 2) + 100 , start_img) # Button pos
 
+
 # Initialize game variables
 game_over = 0
 main_menu = True
+score = 0
 
 run = True
 while run:
@@ -108,6 +114,8 @@ while run:
             world.enemy_group.update(world)
             world.enemy_group.draw(screen)
             world.spike_group.draw(screen)
+            world.exit_group.draw(screen)
+            world.coin_group.draw(screen)
 
             # Collision -> player & spikes
             if pygame.sprite.spritecollide(player, world.spike_group, False):
@@ -117,7 +125,10 @@ while run:
             if pygame.sprite.spritecollide(player, world.enemy_group, False):
                 game_over = -1
 
+            # Collision -> player & exit
             if pygame.sprite.spritecollide(player, world.exit_group, False):
+                # Maybe add a reset here? (only resetting score for now)
+                score = 0
                 # Load next level if available, else win the game.
                 level += 1
                 if level <= max_levels:
@@ -129,6 +140,13 @@ while run:
                 else:
                     game_over = 1
 
+            # Collision -> player & coin
+            coins_collected = pygame.sprite.spritecollide(player, world.coin_group, True) # (True removes coin on collision)
+            if coins_collected:
+                score += len(coins_collected)
+
+            screen.blit(coin_img, (tile_size - 10, 10))
+            draw_text("X" + str(score), font_score, white, tile_size + 12, 4)
 
         else:
             if game_over == -1:
@@ -138,6 +156,7 @@ while run:
                     level_data = load_level(level)
                     world = World(level_data)
                     player = Player(50, screen_height - 120)
+                    score = 0
                     game_over = 0
             elif game_over == 1:
                 draw_text("YOU WIN!", font, blue, (screen_width // 2) - 200, screen_height // 2)
@@ -147,6 +166,7 @@ while run:
                     level_data = load_level(level)
                     world = World(level_data)
                     player = Player(50, screen_height - 120)
+                    score = 0
                     game_over = 0
 
     pygame.display.update()

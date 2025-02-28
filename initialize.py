@@ -60,8 +60,8 @@ coin_img = pygame.image.load('img/coin.png')
 coin_img = pygame.transform.scale(coin_img, (tile_size // 2, tile_size // 2))
 
 # Level management variables
-level = 1
-max_levels = 6
+level = 7
+max_levels = 7
 
 
 # Load initial level and world

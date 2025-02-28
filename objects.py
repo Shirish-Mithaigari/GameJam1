@@ -45,6 +45,9 @@ class Player(pygame.sprite.Sprite):
         # Flag for jump
         self.jumped = False
 
+        # Flag for in air
+        self.in_air = True
+
 
     def update(self, world):
         # Set the walk animation speed
@@ -54,7 +57,7 @@ class Player(pygame.sprite.Sprite):
         dx = 0
         dy = 0
 
-        # Horizontal Movement
+        # Horizontal Movement (static tiles)
         # If player is moving (direction != 0), update animation and delta coordinates
         if self.direction != 0:
             dx = int(self.speed * self.direction)
@@ -86,7 +89,7 @@ class Player(pygame.sprite.Sprite):
             self.y_vel = 10
         dy += self.y_vel
 
-        # Collision Detection
+        # Collision Detection (static tiles)
         # For each tile in the world, adjust dx and dy if a collision would occur.
         for tile in world.tile_list:
             tile_rect = tile[1]
@@ -102,10 +105,33 @@ class Player(pygame.sprite.Sprite):
                     dy = tile_rect.bottom - self.rect.top
                     self.y_vel = 0
 
+
+
+        # Moving platform collision
+        col_thresh = 15  # Collision Threshold
+        for platform in world.platform_group:
+            # Check horizontal collision with platform
+            if platform.rect.colliderect(self.rect.x + dx, self.rect.y, self.rect.width, self.rect.height):
+                dx = 0
+            # Check vertical collision with platform
+            if platform.rect.colliderect(self.rect.x, self.rect.y + dy, self.rect.width, self.rect.height):
+                # Player's head collides
+                if abs((self.rect.top + dy) - platform.rect.bottom) < col_thresh:
+                    self.y_vel = 0
+                    dy = platform.rect.bottom - self.rect.top
+                # Player's feet collides
+                elif abs((self.rect.bottom) - platform.rect.top) < col_thresh:
+                    self.rect.bottom = platform.rect.top
+                    self.in_air = False
+                    dy = 0
+                # Move sideways with the platform if it has horizontal movement
+                if platform.move_x != 0:
+                    self.rect.x += platform.move_direction * platform.move_x
+
+
         # Update player position
         self.rect.x += dx
         self.rect.y += dy
-
             
     def draw(self, screen):
         # Draw player at current location with rect(coordinates)

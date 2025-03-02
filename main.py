@@ -95,83 +95,51 @@ game_over = 0
 main_menu = True
 score = 0
 difficulty = None
-
-
-while main_menu:
-    clock.tick(fps)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            main_menu = False
-            run = False
-
-    screen.blit(bg_img, (0, 0))
-    draw_text("PIXEL PLATFORMER", font, blue, (screen_width // 2) - 250, (screen_height // 2) - 150)
-    # subtext for each difficulty option
-    draw_text("Double jump, less gravity, slower enemies", font_score, green, 10, (screen_height // 2))
-    draw_text("Higher gravity, faster enemies", font_score, (120, 0, 0), (screen_width // 2) - 50, (screen_height // 2) + 110)
-
-
-    if easy_button.draw(screen):
-        difficulty = "easy"
-        main_menu = False
-    elif hard_button.draw(screen):
-        difficulty = "hard"
-        main_menu = False
-        # Enemy and platform speed for hard mode
-        for enemy in world.enemy_group.sprites():
-            enemy.speed *= 2
-        for platform in world.platform_group.sprites():
-            if platform.move_x != 0:
-                platform.move_x *= 2
-            if platform.move_y != 0:
-                platform.move_y *= 2
-
-        
-
-    pygame.display.update()
-
-# If no difficulty was selected default to easy.
-if difficulty is None:
-    difficulty = "easy"
-
-# Now, create the player with the chosen difficulty
-player = Player(50, screen_height - 120, difficulty)
-
-# Draw bg
-screen.blit(bg_img, (0,0))
+player = None
 
 async def main():
     global game_over, main_menu, score, level, difficulty, world, player
+
     run = True
     while run:
         clock.tick(fps)
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
 
-        # Draw bg
-        screen.blit(bg_img, (0,0))
-
-        # Main menu
+        screen.blit(bg_img, (0, 0))
+        
         if main_menu:
             draw_text("PIXEL PLATFORMER", font, blue, (screen_width // 2) - 250, (screen_height // 2) - 150)
             # subtext for each difficulty option
             draw_text("Double jump, less gravity, slower enemies", font_score, green, 10, (screen_height // 2))
-            draw_text("Higher gravity, fall damage, faster enemies", font_score, (255, 182, 193), (screen_width // 2) , (screen_height // 2) + 110)
-            
-            # Check if either button is clicked to set difficulty and start game
+            draw_text("Higher gravity, faster enemies", font_score, (120, 0, 0), (screen_width // 2) - 50, (screen_height // 2) + 110)
+
+
             if easy_button.draw(screen):
                 difficulty = "easy"
                 main_menu = False
             elif hard_button.draw(screen):
                 difficulty = "hard"
                 main_menu = False
+                # Enemy and platform speed for hard mode
+                for enemy in world.enemy_group.sprites():
+                    enemy.speed *= 2
+                for platform in world.platform_group.sprites():
+                    if platform.move_x != 0:
+                        platform.move_x *= 2
+                    if platform.move_y != 0:
+                        platform.move_y *= 2
 
         
-        else:
 
-            # Update player based on key inputs (when game_over = 0) 
+        else:
+            # Once main_menu is False, create the player if not already created
+            if difficulty is not None and player is None:
+                player = Player(50, screen_height - 120, difficulty)
+
+
+
             if game_over == 0:
             
                 keys = pygame.key.get_pressed()
@@ -225,6 +193,15 @@ async def main():
                         world = World(level_data)
                         # Reset player position:
                         player = Player(50, screen_height - 120, difficulty)
+
+                        if difficulty == "hard":
+                            for enemy in world.enemy_group.sprites():
+                                enemy.speed *= 2
+                            for platform in world.platform_group.sprites():
+                                if platform.move_x != 0:
+                                    platform.move_x *= 2
+                                if platform.move_y != 0:
+                                    platform.move_y *= 2
                     else:
                         game_over = 1
 
@@ -237,6 +214,7 @@ async def main():
                 screen.blit(coin_img, (tile_size - 10, 10))
                 draw_text("X" + str(score), font_score, white, tile_size + 12, 4)
 
+
             else:
                 if game_over == -1:
                     draw_text("GAME OVER!", font, blue, (screen_width // 2) - 200, screen_height // 2)
@@ -247,6 +225,14 @@ async def main():
                         player = Player(50, screen_height - 120, difficulty)
                         score = 0
                         game_over = 0
+                        if difficulty == "hard":
+                            for enemy in world.enemy_group.sprites():
+                                enemy.speed *= 2
+                            for platform in world.platform_group.sprites():
+                                if platform.move_x != 0:
+                                    platform.move_x *= 2
+                                if platform.move_y != 0:
+                                    platform.move_y *= 2
                 elif game_over == 1:
                     draw_text("YOU WIN!", font, blue, (screen_width // 2) - 200, screen_height // 2)
                     # Restarts from level 1 if all completed
@@ -257,6 +243,14 @@ async def main():
                         player = Player(50, screen_height - 120, difficulty)
                         score = 0
                         game_over = 0
+                        if difficulty == "hard":
+                            for enemy in world.enemy_group.sprites():
+                                enemy.speed *= 2
+                            for platform in world.platform_group.sprites():
+                                if platform.move_x != 0:
+                                    platform.move_x *= 2
+                                if platform.move_y != 0:
+                                    platform.move_y *= 2
 
         pygame.display.update()
         await asyncio.sleep(0)

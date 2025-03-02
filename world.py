@@ -16,7 +16,7 @@ class World:
 
         # Load images for static background tiles
         dirt_img = pygame.image.load('img/box.png')
-        grass_img = pygame.image.load('img/green.png')
+        grass_img = pygame.image.load('img/Green.png')
         border_img = pygame.image.load('img/border.png')
         border_img = pygame.transform.scale(border_img, (tile_size, tile_size))
         

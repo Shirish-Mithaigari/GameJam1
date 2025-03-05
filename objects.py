@@ -150,9 +150,9 @@ class Player(pygame.sprite.Sprite):
             # If jumps are remaining, perform a jump
             if self.jumps_remaining > 0:
                 if self.difficulty == "hard":
-                    self.y_vel = -14  # Reduced jump strength in hard mode
+                    self.y_vel = -13  # Reduced jump strength in hard mode
                 else:
-                    self.y_vel = -17  # Normal jump strength in easy mode
+                    self.y_vel = -15  # Normal jump strength in easy mode
                 self.jumps_remaining -= 1
 
     def draw(self, screen):
